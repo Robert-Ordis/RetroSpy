@@ -473,6 +473,22 @@ namespace RetroSpy
             //_vm.XIAndGamepad.UpdateContents(WiiReaderV1.GetDevices());
         }
 
+        private void PlotterXml_Click(object sender, RoutedEventArgs e)
+        {
+            //MessageBox.Show("test", "PlotterXml", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, MessageBoxResult.Yes);
+            var dialog = new VistaOpenFileDialog();
+            dialog.Filter = "XML config (*.xml)|*.xml|All files (*.*)|*.*";
+            dialog.ShowDialog();
+            this.PlotterXmlForm.Text = dialog.FileName;
+            /*
+            if (dialog.ShowDialog() == true)
+            {
+                this.PlotterXml = dialog.FileName;
+            }
+            */
+            //MessageBox.Show(dialog.FileName, "PlotterXml", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, MessageBoxResult.Yes);
+        }
+
         private void MiSTerPopulate_Click(object sender, RoutedEventArgs e)
         {
             SshClient _client = null;
