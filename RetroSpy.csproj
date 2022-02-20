@@ -184,6 +184,7 @@
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="BitmapPixelMaker.cs" />
+    <Compile Include="Exporter\ControllerStateEmitter.cs" />
     <Compile Include="GameBoyPrinterEmulatorWindow.xaml.cs">
       <DependentUpon>GameBoyPrinterEmulatorWindow.xaml</DependentUpon>
     </Compile>
@@ -2327,6 +2328,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MessagePack" Version="2.3.85" />
+    <PackageReference Include="MessagePack.Annotations" Version="2.3.85" />
     <PackageReference Include="NuGet.CommandLine" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
