@@ -27,7 +27,7 @@ namespace RetroExporter
             this.values = new Dictionary<string, dynamic>();
         }
     }
-    class ControllerStateEmitter : IDisposable
+    public class ControllerStateEmitter : IDisposable
     {
 
         private bool _disposed = false;
@@ -38,6 +38,7 @@ namespace RetroExporter
         // UDP Socket Client. Since emitted data is represent in msgpack,
         // sending as datagram is preffered to stream.
         private UdpClient udp_client;
+        private int udp_port;
 
         // Destinations for this.udp_client. All packets will be disposed while this is empty.
         private HashSet<IPEndPoint> udp_dests;
@@ -52,18 +53,19 @@ namespace RetroExporter
         // Specify the keys to pack and send.
         private Dictionary<string, string> send_keys;
 
-        public PktFrame pkt_frame;
+        private PktFrame pkt_frame;
 
         public ControllerStateEmitter(int threshold_count, int udp_port = 0)
         {
             this.threshold_count = threshold_count;
+            this.udp_client = null;
             if (udp_port <= 0 || udp_port > 0xFFFF)
             {
-                this.udp_client = new UdpClient();
+                this.udp_port = 0;
             }
             else
             {
-                this.udp_client = new UdpClient(udp_port);
+                this.udp_port = udp_port;
             }
             this.udp_dests = new HashSet<IPEndPoint>();
 
@@ -91,6 +93,21 @@ namespace RetroExporter
             this.udp_client.Close();
             this.cts.Dispose();
             this._disposed = true;
+        }
+
+        public void enableUdpClient()
+        {
+            if (this.udp_client == null)
+            {
+                if (this.udp_port <= 0 || this.udp_port > 0x0000FFFF)
+                {
+                    this.udp_client = new UdpClient(udp_port);
+                }
+                else
+                {
+                    this.udp_client = new UdpClient(udp_port);
+                }
+            }
         }
 
         public void appendDestUdp(IPEndPoint endpoint)
@@ -164,7 +181,10 @@ namespace RetroExporter
             var len = this.buffer_pushed;
             this.buffer = new byte[this.threshold_count * 4];
             this.buffer_pushed = 0;
-
+            if(this.udp_client == null)
+            {
+                return;
+            }
             var c = Task.Factory.StartNew(() => {
                 foreach (var dest in this.udp_dests)
                 {
