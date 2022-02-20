@@ -185,6 +185,7 @@
     </Compile>
     <Compile Include="BitmapPixelMaker.cs" />
     <Compile Include="Exporter\ControllerStateEmitter.cs" />
+    <Compile Include="Exporter\ControllerStateEmitterBuilder.cs" />
     <Compile Include="GameBoyPrinterEmulatorWindow.xaml.cs">
       <DependentUpon>GameBoyPrinterEmulatorWindow.xaml</DependentUpon>
     </Compile>
