@@ -150,6 +150,7 @@
       <HintPath>SharpDX\net45\SharpDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />

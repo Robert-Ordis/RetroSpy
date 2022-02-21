@@ -90,7 +90,10 @@ namespace RetroExporter
                 return;
             }
             this.cts.Cancel();
-            this.udp_client.Close();
+            if(!(this.udp_client is null))
+            {
+                this.udp_client.Close();
+            }
             this.cts.Dispose();
             this._disposed = true;
         }
@@ -113,6 +116,11 @@ namespace RetroExporter
         public void appendDestUdp(IPEndPoint endpoint)
         {
             this.udp_dests.Add(endpoint);
+        }
+
+        public int getDestUdpCount()
+        {
+            return this.udp_dests.Count;
         }
 
         public void registerOutput(string src_name, string out_name = null)

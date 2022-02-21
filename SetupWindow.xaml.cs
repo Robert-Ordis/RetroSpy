@@ -99,6 +99,8 @@ namespace RetroSpy
         private readonly ResourceManager _resources;
         private bool isClosing;
 
+        private RetroExporter.ControllerStateEmitter _emitter;
+
         private void UpdatePortListThread()
         {
             Thread thread = new Thread(UpdatePortList);
@@ -221,6 +223,8 @@ namespace RetroSpy
                 {
                     ShowSkinParseErrors(results.ParseErrors);
                 }
+
+                _emitter = null;
 
                 if (skipSetup)
                 {
@@ -480,6 +484,26 @@ namespace RetroSpy
             dialog.Filter = "XML config (*.xml)|*.xml|All files (*.*)|*.*";
             dialog.ShowDialog();
             this.PlotterXmlForm.Text = dialog.FileName;
+            try
+            {
+                if(!(dialog.FileName is null) && "" != dialog.FileName) { 
+                    var loader = RetroExporter.ControllerStateEmitterBuilder.newInstance();
+                    _emitter = loader.ReadXml(dialog.FileName);
+                }
+                else
+                {
+                    _emitter = null;
+                }
+            }
+            catch(Exception exc){
+                Console.WriteLine(exc.StackTrace);
+                MessageBox.Show(exc.Message, dialog.FileName, MessageBoxButton.OK);
+            }
+
+            if(_emitter is null)
+            {
+                this.PlotterXmlForm.Text = "";
+            }
             /*
             if (dialog.ShowDialog() == true)
             {
