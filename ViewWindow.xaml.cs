@@ -150,6 +150,8 @@ namespace RetroSpy
         // without the image aligning to the top left of its element.
         private readonly List<Tuple<AnalogTrigger, Grid>> _triggersWithGridImages = new List<Tuple<AnalogTrigger, Grid>>();
 
+        private readonly RetroExporter.ControllerStateEmitter _emitter;
+
         /// Expose the enabled status of the low-pass filter for data binding.
         public bool ButtonBlinkReductionEnabled
         {
@@ -192,7 +194,7 @@ namespace RetroSpy
         }
 
         [CLSCompliant(false)]
-        public ViewWindow(Skin skin, Background skinBackground, IControllerReader reader, bool staticViewerWindowName)
+        public ViewWindow(Skin skin, Background skinBackground, IControllerReader reader, bool staticViewerWindowName, RetroExporter.ControllerStateEmitter emitter)
         {
             InitializeComponent();
             DataContext = this;
@@ -212,6 +214,13 @@ namespace RetroSpy
 
             _skin = skin;
             _reader = reader;
+
+            _emitter = emitter;
+            if(!(_emitter is null))
+            {
+                _emitter.enableUdpClient();
+            }
+
 
             Title = staticViewerWindowName ? "RetroSpy Viewer" : skin.Name;
 
@@ -485,6 +494,10 @@ namespace RetroSpy
                 _keybindings.Finish();
             }
             _reader.Finish();
+            if(!(_emitter is null))
+            {
+                _emitter.Dispose();
+            }
         }
 
         private void Reader_ControllerStateChanged(object reader, ControllerStateEventArgs e)
@@ -822,6 +835,11 @@ namespace RetroSpy
                 }
             }
 
+            if(!(_emitter is null))
+            {
+                var dt = new DateTimeOffset(DateTime.Now);
+                _emitter.push(dt.ToUnixTimeMilliseconds(), e.Buttons, e.Analogs, e.RawAnalogs);
+            }
 
         }
 

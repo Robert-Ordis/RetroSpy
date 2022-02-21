@@ -479,28 +479,36 @@ namespace RetroSpy
 
         private void PlotterXml_Click(object sender, RoutedEventArgs e)
         {
-            //MessageBox.Show("test", "PlotterXml", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, MessageBoxResult.Yes);
             var dialog = new VistaOpenFileDialog();
             dialog.Filter = "XML config (*.xml)|*.xml|All files (*.*)|*.*";
             dialog.ShowDialog();
-            this.PlotterXmlForm.Text = dialog.FileName;
+            ReadPlotterXml(dialog.FileName);
+        }
+
+        private void ReadPlotterXml(string path)
+        {
+            //MessageBox.Show("test", "PlotterXml", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, MessageBoxResult.Yes);
+
+            this.PlotterXmlForm.Text = path;
             try
             {
-                if(!(dialog.FileName is null) && "" != dialog.FileName) { 
+                if (!(string.IsNullOrEmpty(path)))
+                {
                     var loader = RetroExporter.ControllerStateEmitterBuilder.newInstance();
-                    _emitter = loader.ReadXml(dialog.FileName);
+                    _emitter = loader.ReadXml(path);
                 }
                 else
                 {
                     _emitter = null;
                 }
             }
-            catch(Exception exc){
+            catch (Exception exc)
+            {
                 Console.WriteLine(exc.StackTrace);
-                MessageBox.Show(exc.Message, dialog.FileName, MessageBoxButton.OK);
+                MessageBox.Show(exc.Message, path, MessageBoxButton.OK);
             }
 
-            if(_emitter is null)
+            if (_emitter is null)
             {
                 this.PlotterXmlForm.Text = "";
             }
@@ -659,7 +667,7 @@ namespace RetroSpy
                     _portListUpdateTimer.Stop();
                     v = new ViewWindow(_vm.Skins.SelectedItem,
                                     _vm.Backgrounds.SelectedItem,
-                                    reader, _vm.StaticViewerWindowName);
+                                    reader, _vm.StaticViewerWindowName, _emitter);
                     v.ShowDialog();
                 }
             }
@@ -688,6 +696,7 @@ namespace RetroSpy
             }
 
             _portListUpdateTimer.Start();
+            ReadPlotterXml(PlotterXmlForm.Text);
             Show();
         }
 

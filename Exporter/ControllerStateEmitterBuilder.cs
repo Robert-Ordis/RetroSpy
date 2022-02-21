@@ -100,7 +100,7 @@ namespace RetroExporter
                 Console.WriteLine("port: " + port + ", th: " + threshold + ", pr: " + prot);
                 if(prot != "udp")
                 {
-                    new ConfigurationErrorsException("Currently, only udp is supported.");
+                    throw new ConfigurationErrorsException("Currently, only udp is supported.");
                 }
                 ret = new ControllerStateEmitter(threshold, port);
             }
