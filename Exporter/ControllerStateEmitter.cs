@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*!
+ * RetroExporter.ControllerStateEmitter
+ *
+ * Copyright (c) 2022 Robert_Ordis
+ *
+ * Released under the MIT license.
+ * see https://opensource.org/licenses/MIT
+ *
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
