@@ -490,6 +490,7 @@ namespace RetroSpy
             //MessageBox.Show("test", "PlotterXml", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, MessageBoxResult.Yes);
 
             this.PlotterXmlForm.Text = path;
+            _emitter?.Dispose();
             try
             {
                 if (!(string.IsNullOrEmpty(path)))
@@ -506,6 +507,7 @@ namespace RetroSpy
             {
                 Console.WriteLine(exc.StackTrace);
                 MessageBox.Show(exc.Message, path, MessageBoxButton.OK);
+                _emitter = null;
             }
 
             if (_emitter is null)
