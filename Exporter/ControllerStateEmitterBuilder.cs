@@ -20,16 +20,16 @@ using System.Xml.Linq;
 
 /*
 <plotter name="WindWaker-MSS" author="Robert_Ordis" type="gamecube">
-    <spy-export>
-        <local port="55555" threshold="512 protocol="udp"/>
+    <exporter>
+        <local port="55555" threshold="512" protocol="udp"/>
         <dest ip="127.0.0.1" port="8934" protocol="udp"/>
         <dest ip="127.0.0.1" port="8934" protocol="udp"/>
-        </spy-export>
-    <plot-reading>
-    <!-- this will also be used as dest above. -->
-        <local port="8934" protocol="udp" rate_ms=100/>
+    </exporter>
+    <receiver>
+        <!-- this will also be used as dest above. -->
+        <local port="8934" protocol="udp" rate_ms="100"/>
         <dest dir="C:\retro-plotter\gamecube\windwaker"/>
-    </plot-reading>
+    </receiver>
 
     <!-- Determin which input you are going to export and plot.-->
     <!-- coeff->val to multiply for plotting(default=1) -->
@@ -68,11 +68,11 @@ namespace RetroExporter
             {
                 throw new ConfigurationErrorsException("Root elem must be named as \"plotter\".");
             }
-            tmp = root.Element("spy-export");
-            res = this.loadSpyExport(tmp);
+            tmp = root.Element("exporter");
+            res = this.loadExporter(tmp);
 
-            tmp = root.Element("plot-reading");
-            this.loadPlotReading(ref res, tmp);
+            tmp = root.Element("receiver");
+            this.loadReceiver(ref res, tmp);
             
 
             foreach(var el in root.Elements("mapping"))
@@ -87,22 +87,22 @@ namespace RetroExporter
             {
                 throw new ConfigurationErrorsException("elem:\"mapping\" must be defined at least 1 time.");
             }
-            this.readEmitters[path] = res;
+            //this.readEmitters[path] = res;
 
             return res;
             
         }
 
-        private ControllerStateEmitter loadSpyExport(XElement spyExport)
+        private ControllerStateEmitter loadExporter(XElement spyExport)
         {
             if(spyExport is null)
             {
-                throw new ConfigurationErrorsException("spy-export doesn't exists");
+                throw new ConfigurationErrorsException("\"exporter\" doesn't exists");
             }
             ControllerStateEmitter ret;
             {
                 //part: "local"
-                Console.WriteLine("reading spy-export.local");
+                Console.WriteLine("reading exporter.local");
                 var tmp = spyExport.Element("local");
                 var port = xElemAttr<int>(tmp, "port", false, () => { return 0; });
                 var threshold = xElemAttr<int>(tmp, "threshold", false, () => { return 512; });
@@ -144,7 +144,7 @@ namespace RetroExporter
             return ret;
         }
 
-        private void loadPlotReading(ref ControllerStateEmitter cs, XElement elem)
+        private void loadReceiver(ref ControllerStateEmitter cs, XElement elem)
         {
             if (elem is null)
             {
@@ -153,7 +153,7 @@ namespace RetroExporter
             {
                 //part: "local" => only read attrs: "port" "protocol"
                 var tmp = elem.Element("local");
-                var port = xElemAttr<int>(tmp, "port", false, () => { return 0; });
+                var port = xElemAttr<int>(tmp, "port", false, () => 0 );
                 var prot = xElemAttr<string>(tmp, "protocol", false, () => { return "udp"; });
                 if (prot != "udp")
                 {
