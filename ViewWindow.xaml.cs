@@ -216,11 +216,7 @@ namespace RetroSpy
             _reader = reader;
 
             _emitter = emitter;
-            if(!(_emitter is null))
-            {
-                _emitter.enableUdpClient();
-            }
-
+            _emitter?.enableUdpClient();
 
             Title = staticViewerWindowName ? "RetroSpy Viewer" : skin.Name;
 
@@ -494,10 +490,7 @@ namespace RetroSpy
                 _keybindings.Finish();
             }
             _reader.Finish();
-            if(!(_emitter is null))
-            {
-                _emitter.Dispose();
-            }
+            _emitter?.Dispose();
         }
 
         private void Reader_ControllerStateChanged(object reader, ControllerStateEventArgs e)
